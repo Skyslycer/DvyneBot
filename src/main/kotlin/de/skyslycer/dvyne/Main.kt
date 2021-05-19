@@ -1,6 +1,6 @@
-package de.skyslycer.dyve
+package de.skyslycer.dvyne
 
-import de.skyslycer.dyve.commands.Command
+import de.skyslycer.dvyne.commands.Command
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.entities.Activity
 import java.io.File
@@ -11,7 +11,7 @@ fun main() {
     val jda = JDABuilder.createDefault(String(token))
 
     var prefix = "d!"
-    val gitHubUrl = "https://github.com/Skyslycer/DyveBot"
+    val gitHubUrl = "https://github.com/Skyslycer/DvyneBot"
 
     jda.setActivity(Activity.playing("mit deinem Leben"))
     jda.addEventListeners(Command(prefix, gitHubUrl))

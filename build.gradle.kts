@@ -4,7 +4,7 @@ plugins {
     kotlin("jvm") version "1.5.0"
 }
 
-group = "de.skyslycer.dyve"
+group = "de.skyslycer.dvyne"
 version = "1.0-SNAPSHOT"
 
 repositories {

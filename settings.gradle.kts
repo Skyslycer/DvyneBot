@@ -1,3 +1,3 @@
 
-rootProject.name = "DyveBot"
+rootProject.name = "DvyneBot"
 

@@ -1,4 +1,4 @@
-package de.skyslycer.dyve.commands
+package de.skyslycer.dvyne.commands
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter

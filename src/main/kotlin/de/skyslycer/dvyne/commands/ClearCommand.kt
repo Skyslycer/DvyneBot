@@ -1,4 +1,4 @@
-package de.skyslycer.dyve.commands
+package de.skyslycer.dvyne.commands
 
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.Message
