@@ -1,5 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+val exposedVersion = "0.31.1"
+
 plugins {
     kotlin("jvm") version "1.5.0"
 }
@@ -17,7 +19,13 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test-junit"))
+
     implementation("net.dv8tion:JDA:4.2.1_253")
+
+    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation("org.xerial:sqlite-jdbc:3.30.1")
 }
 
 tasks.test {
