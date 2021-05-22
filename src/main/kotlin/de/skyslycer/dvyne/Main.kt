@@ -11,7 +11,7 @@ import java.io.File
 import java.util.*
 
 fun main() {
-    val database = Database.connect("jdbc:sqlite:${File("src/main/resources/dbpath.txt").readText()}", "org.sqlite.JDBC")
+    val database = Database.connect("jdbc:sqlite:src/main/resources/dvyne.db", "org.sqlite.JDBC")
 
     val jda = JDABuilder.createDefault(File("src/main/resources/token.txt").readText())
 
