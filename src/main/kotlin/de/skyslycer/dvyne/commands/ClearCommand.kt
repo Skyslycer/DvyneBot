@@ -1,9 +1,12 @@
 package de.skyslycer.dvyne.commands
 
 import net.dv8tion.jda.api.EmbedBuilder
+import net.dv8tion.jda.api.entities.Activity
+import net.dv8tion.jda.api.entities.Emote
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import java.awt.Color
+import java.lang.IllegalArgumentException
 import java.time.Instant
 import java.time.ZonedDateTime
 
@@ -11,41 +14,80 @@ class ClearCommand(private val prefix: String) {
     fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
         val args = event.message.contentRaw.split(" ")
 
-        if (args.count() == 3 && args[0].equals(prefix, true) && args[1].equals("clear", true)) {
+        if (args.count() == 3) {
             try {
+                if (args[2].toInt() >= 100 || args[2].toInt() <= 1) {
+                    val invalidNumberEmbed = EmbedBuilder()
+                        .setTitle("Wrong usage!")
+                        .setColor(Color.ORANGE)
+                        .setDescription("You can only choose a number between 1 and 100!")
+                        .setFooter(event.author.asTag)
+                        .setTimestamp(Instant.from(ZonedDateTime.now()))
+                        .build()
+
+                    event.channel.sendMessage(invalidNumberEmbed).queue { message ->
+                        message.addReaction("🗑").queue()
+                    }
+
+                    return
+                }
+
                 val messages: List<Message> = event.channel.history.retrievePast(args[2].toInt()).complete()
+
+                if (messages.count() <= 1) {
+                    val tooLowMessagesEmbed = EmbedBuilder()
+                        .setTitle("Not enough messages!")
+                        .setColor(Color.RED)
+                        .setDescription("There must be at least 1 message to delete!")
+                        .setFooter(event.author.asTag)
+                        .setTimestamp(Instant.from(ZonedDateTime.now()))
+                        .build()
+
+                    event.channel.sendMessage(tooLowMessagesEmbed).queue { message ->
+                        message.addReaction("🗑").queue()
+                    }
+
+                    return
+                }
+
                 event.channel.deleteMessages(messages).queue()
 
                 val successEmbed = EmbedBuilder()
                     .setTitle("Success!")
                     .setColor(Color.GREEN)
                     .setDescription("You deleted the last ${messages.size} messages!")
-                    .setFooter("Creator: Skyslycer")
+                    .setFooter(event.author.asTag)
                     .setTimestamp(Instant.from(ZonedDateTime.now()))
                     .build()
 
-                event.channel.sendMessage(successEmbed)
+                event.channel.sendMessage(successEmbed).queue { message ->
+                    message.addReaction("🗑").queue()
+                }
             } catch (exception: NumberFormatException) {
                 val errorEmbed = EmbedBuilder()
                     .setTitle("Error")
                     .setColor(Color.RED)
-                    .setDescription("Your 3rd argument needs to be a number!")
-                    .setFooter("Creator: Skyslycer")
+                    .setDescription("Your 2nd argument needs to be a number!")
+                    .setFooter(event.author.asTag)
                     .setTimestamp(Instant.from(ZonedDateTime.now()))
                     .build()
 
-                event.channel.sendMessage(errorEmbed)
+                event.channel.sendMessage(errorEmbed).queue { message ->
+                    message.addReaction("🗑").queue()
+                }
             }
-        } else if (args.count() == 2 && args[1].equals("clear", true)) {
-            val successEmbed = EmbedBuilder()
+        } else {
+            val usageEmbed = EmbedBuilder()
                 .setTitle("Wrong usage!")
                 .setColor(Color.ORANGE)
-                .setDescription("Please use $prefix clear (count)!")
-                .setFooter("Creator: Skyslycer")
+                .setDescription("Please use `$prefix delete (1-100)`!")
+                .setFooter(event.author.asTag)
                 .setTimestamp(Instant.from(ZonedDateTime.now()))
                 .build()
 
-            event.channel.sendMessage(successEmbed)
+            event.channel.sendMessage(usageEmbed).queue { message ->
+                message.addReaction("🗑").queue()
+            }
         }
     }
 }
