@@ -9,5 +9,6 @@ class DatabaseManager {
         val channel: Column<Long> = long("channel").uniqueIndex()
         val message: Column<Long> = long("message").uniqueIndex()
         val emoji: Column<String> = varchar("emoji", 34)
+        override val primaryKey = PrimaryKey(message)
     }
 }

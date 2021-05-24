@@ -14,12 +14,18 @@ class Command(private val prefix: String, private val gitHubUrl: String) : Liste
     private val nukeCommand = NukeCommand()
     private val pingCommand = PingCommand()
     private val rpsCommand = RPSCommand(prefix)
+    private val embedCommand = EmbedCommand(prefix)
+    private val addRoleCommand = AddRoleCommand(prefix)
+    private val removeRoleCommand = RemoveRoleCommand(prefix)
 
     private val commandsList = arrayListOf(
         "`$prefix dm @User (message)` - Send a user a direct message",
         "`$prefix delete (1-100)` - Delete certain messages",
         "`$prefix nuke` - Recreate the current channel",
         "`$prefix ping` - Sends the ping of the bot",
+        "`$prefix embed #color title | description` - Create an embed sent by the bot",
+        "`$prefix addrole @User @Role` - Gives a member a role",
+        "`$prefix removerole @User @Role` - Removes a role from a member",
         "`$prefix rps (rock, paper, scissors)` - Play a game with the bot"
     ).joinToString("\n")
 
@@ -30,12 +36,15 @@ class Command(private val prefix: String, private val gitHubUrl: String) : Liste
             event.message.delete().queue()
 
             if (args.count() >= 2) {
-                when(args[1].lowercase()) {
-                    "clear", "delete" -> { clearCommand.onGuildMessageReceived(event); return }
+                when(args[1].toLowerCase()) {
+                    "clear", "delete", "c" -> { clearCommand.onGuildMessageReceived(event); return }
                     "dm", "directmessage", "pm", "privatemessage" -> { dmCommand.onGuildMessageReceived(event); return }
                     "nuke", "recreate", "n" -> { nukeCommand.onGuildMessageReceived(event); return }
                     "ping", "p" -> { pingCommand.onGuildMessageReceived(event); return }
                     "rps", "rockpaperscissors" -> { rpsCommand.onGuildMessageReceived(event); return }
+                    "embed", "e" -> { embedCommand.onGuildMessageReceived(event); return }
+                    "addrole" -> { addRoleCommand.onGuildMessageReceived(event); return }
+                    "removerole" -> { removeRoleCommand.onGuildMessageReceived(event); return }
                     "help", "h" -> { sendHelp(event); return }
                 }
             }
