@@ -53,7 +53,7 @@ class AddRoleCommand(private val prefix: String) {
                 throw IndexOutOfBoundsException("Null mention")
             }
 
-            event.guild.addRoleToMember(mentionedUser, mentionedRole)
+            event.guild.addRoleToMember(mentionedUser, mentionedRole).queue()
 
             val successfulEmbed = EmbedBuilder()
                 .setTitle("Success!")
