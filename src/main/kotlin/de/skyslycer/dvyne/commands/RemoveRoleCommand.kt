@@ -53,7 +53,7 @@ class RemoveRoleCommand(private val prefix: String) {
                 throw IndexOutOfBoundsException("Null mention")
             }
 
-            event.guild.removeRoleFromMember(mentionedUser, mentionedRole)
+            event.guild.removeRoleFromMember(mentionedUser, mentionedRole).queue()
 
             val successfulEmbed = EmbedBuilder()
                 .setTitle("Success!")
