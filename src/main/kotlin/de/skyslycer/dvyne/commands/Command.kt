@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter
 import java.awt.Color
 import java.time.Instant
 import java.time.ZonedDateTime
+import java.util.*
 
 class Command(private val prefix: String, private val gitHubUrl: String) : ListenerAdapter() {
     private val clearCommand = ClearCommand(prefix)
@@ -17,6 +18,9 @@ class Command(private val prefix: String, private val gitHubUrl: String) : Liste
     private val embedCommand = EmbedCommand(prefix)
     private val addRoleCommand = AddRoleCommand(prefix)
     private val removeRoleCommand = RemoveRoleCommand(prefix)
+    private val reactionRoleCommand = ReactionRoleCommand(prefix)
+    private val removeReactionRoleCommand = RemoveReactionRoleCommand(prefix)
+    private val listReactionRolesCommand = ListReactionRolesCommand()
 
     private val commandsList = arrayListOf(
         "`$prefix dm @User (message)` - Send a user a direct message",
@@ -26,25 +30,32 @@ class Command(private val prefix: String, private val gitHubUrl: String) : Liste
         "`$prefix embed #color title | description` - Create an embed sent by the bot",
         "`$prefix addrole @User @Role` - Gives a member a role",
         "`$prefix removerole @User @Role` - Removes a role from a member",
+        "`$prefix reactionrole #channel (messageID) (emoji/emote) @Role` - Add a reaction role to a message",
+        "`$prefix reactionrole [#channel] [messageID] (emoji/emote) [@Role]` - Remove a reaction role from the server",
+        "`$prefix listreactionroles` - List all reaction roles of this server",
         "`$prefix rps (rock, paper, scissors)` - Play a game with the bot"
     ).joinToString("\n")
 
     override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
         val args = event.message.contentRaw.split(" ")
+        val isBotMention = args[0] == "<@!844492408162091008>"
 
         if (args[0].equals(prefix, true) || args[0] == "<@!844492408162091008>") {
             event.message.delete().queue()
 
             if (args.count() >= 2) {
-                when(args[1].toLowerCase()) {
+                when(args[1].lowercase(Locale.getDefault())) {
                     "clear", "delete", "c" -> { clearCommand.onGuildMessageReceived(event); return }
-                    "dm", "directmessage", "pm", "privatemessage" -> { dmCommand.onGuildMessageReceived(event); return }
+                    "dm", "directmessage", "pm", "privatemessage" -> { dmCommand.onGuildMessageReceived(event, isBotMention); return }
                     "nuke", "recreate", "n" -> { nukeCommand.onGuildMessageReceived(event); return }
                     "ping", "p" -> { pingCommand.onGuildMessageReceived(event); return }
                     "rps", "rockpaperscissors" -> { rpsCommand.onGuildMessageReceived(event); return }
                     "embed", "e" -> { embedCommand.onGuildMessageReceived(event); return }
-                    "addrole" -> { addRoleCommand.onGuildMessageReceived(event); return }
-                    "removerole" -> { removeRoleCommand.onGuildMessageReceived(event); return }
+                    "addrole" -> { addRoleCommand.onGuildMessageReceived(event, isBotMention); return }
+                    "removerole" -> { removeRoleCommand.onGuildMessageReceived(event, isBotMention); return }
+                    "reactionrole", "rr" -> { reactionRoleCommand.onGuildMessageReceived(event); return }
+                    "removereactionrole", "rrr" -> { removeReactionRoleCommand.onGuildMessageReceived(event); return }
+                    "listreactionroles", "lrr" -> { listReactionRolesCommand.onGuildMessageReceived(event); return }
                     "help", "h" -> { sendHelp(event); return }
                 }
             }

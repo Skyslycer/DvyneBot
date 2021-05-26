@@ -2,13 +2,10 @@ package de.skyslycer.dvyne.commands
 
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.Permission
-import net.dv8tion.jda.api.entities.Activity
-import net.dv8tion.jda.api.entities.Emote
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.MessageEmbed
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import java.awt.Color
-import java.lang.IllegalArgumentException
 import java.time.Instant
 import java.time.ZonedDateTime
 

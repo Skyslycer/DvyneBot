@@ -17,11 +17,13 @@ class RPSCommand(private val prefix: String) {
             return
         }
 
-        val playerInput = when(args[2]) {
+        val playerInput = when (args[2]) {
             "rock" -> 3
             "paper" -> 1
             "scissors" -> 2
-            else -> { sendWrongUsage(event); return }
+            else -> {
+                sendWrongUsage(event); return
+            }
         }
 
         val botInput = Random().nextInt(3) + 1
@@ -54,8 +56,8 @@ class RPSCommand(private val prefix: String) {
         }
     }
 
-    private fun getInputNameFromInt(input: Int) : String {
-        when(input) {
+    private fun getInputNameFromInt(input: Int): String {
+        when (input) {
             1 -> return "paper"
             2 -> return "scissors"
             3 -> return "rock"
@@ -64,10 +66,10 @@ class RPSCommand(private val prefix: String) {
         return "error"
     }
 
-    private fun setGameResult(input: Int, botInput: Int, embedBuilder: EmbedBuilder) : EmbedBuilder {
-        when(input) {
+    private fun setGameResult(input: Int, botInput: Int, embedBuilder: EmbedBuilder): EmbedBuilder {
+        when (input) {
             1 -> {
-                when(botInput) {
+                when (botInput) {
                     2 -> {
                         embedBuilder.setColor(Color.RED)
                         embedBuilder.addField("Result", "You lost", false)
@@ -83,7 +85,7 @@ class RPSCommand(private val prefix: String) {
                 }
             }
             2 -> {
-                when(botInput) {
+                when (botInput) {
                     3 -> {
                         embedBuilder.setColor(Color.RED)
                         embedBuilder.addField("Result", "You lost", false)
@@ -99,7 +101,7 @@ class RPSCommand(private val prefix: String) {
                 }
             }
             3 -> {
-                when(botInput) {
+                when (botInput) {
                     1 -> {
                         embedBuilder.setColor(Color.RED)
                         embedBuilder.addField("Result", "You lost", false)

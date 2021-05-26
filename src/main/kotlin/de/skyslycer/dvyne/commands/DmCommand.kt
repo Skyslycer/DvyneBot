@@ -9,7 +9,7 @@ import java.time.Instant
 import java.time.ZonedDateTime
 
 class DmCommand(private val prefix: String) {
-    fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
+    fun onGuildMessageReceived(event: GuildMessageReceivedEvent, isBotMention: Boolean) {
         val args = event.message.contentRaw.split(" ")
 
         if (!event.member!!.hasPermission(Permission.ADMINISTRATOR)) {
@@ -31,10 +31,9 @@ class DmCommand(private val prefix: String) {
 
         if (args.count() >= 4) {
 
-            if (event.message.mentionedUsers.isEmpty() || event.message.mentionedUsers[0] == null) {
-
+            if (event.message.mentionedUsers.isEmpty() || event.message.mentionedUsers[if (isBotMention) 1 else 0] == null || event.message.mentionedUsers[if (isBotMention) 1 else 0] == event.jda.selfUser) {
                 val wrongUsageEmbed = EmbedBuilder()
-                    .setTitle("Unkown user")
+                    .setTitle("Unknown user")
                     .setColor(Color.RED)
                     .setDescription("Please tag a valid member!")
                     .setFooter(event.author.asTag)
@@ -48,27 +47,27 @@ class DmCommand(private val prefix: String) {
                 return
             }
 
-            val user = event.message.mentionedUsers[0]
+            val user = event.message.mentionedUsers[if (isBotMention) 1 else 0]
             val message = arrayListOf("")
 
-            for (i in 3 until args.count() ) {
+            for (i in 3 until args.count()) {
                 message += args[i]
             }
 
-            user.openPrivateChannel().queue { channel ->
-                val dmEmbed = EmbedBuilder()
-                    .setTitle(event.guild.name)
-                    .setColor(Color.GREEN)
-                    .setDescription("You received a direct message from a Discord server!")
-                    .addField(MessageEmbed.Field("Message", message.joinToString(" "), false))
-                    .setFooter(event.author.asTag)
-                    .setTimestamp(Instant.from(ZonedDateTime.now()))
-                    .build()
-
-                channel.sendMessage(dmEmbed).queue()
-            }
-
             val dmEmbed = EmbedBuilder()
+                .setTitle(event.guild.name)
+                .setColor(Color.GREEN)
+                .setDescription("You received a direct message from a Discord server!")
+                .addField(MessageEmbed.Field("Message", message.joinToString(" "), false))
+                .setFooter(event.author.asTag)
+                .setTimestamp(Instant.from(ZonedDateTime.now()))
+                .build()
+
+            user.openPrivateChannel()
+                .flatMap { it.sendMessage(dmEmbed) }
+                .queue()
+
+            val dmSuccessfulEmbed = EmbedBuilder()
                 .setTitle("Message sent")
                 .setColor(Color.GREEN)
                 .setDescription("The user ${user.asMention} successfully received the message!")
@@ -77,7 +76,7 @@ class DmCommand(private val prefix: String) {
                 .setTimestamp(Instant.from(ZonedDateTime.now()))
                 .build()
 
-            event.channel.sendMessage(dmEmbed).queue { embedMessage ->
+            event.channel.sendMessage(dmSuccessfulEmbed).queue { embedMessage ->
                 embedMessage.addReaction("🗑").queue()
             }
 

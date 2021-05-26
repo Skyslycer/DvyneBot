@@ -9,7 +9,7 @@ import java.time.Instant
 import java.time.ZonedDateTime
 
 class RemoveRoleCommand(private val prefix: String) {
-    fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
+    fun onGuildMessageReceived(event: GuildMessageReceivedEvent, isBotMention: Boolean) {
         val args = event.message.contentRaw.split(" ")
 
         if (!event.member!!.hasPermission(Permission.MANAGE_ROLES)) {
@@ -46,7 +46,7 @@ class RemoveRoleCommand(private val prefix: String) {
         }
 
         try {
-            val mentionedUser = event.message.mentionedMembers[0]
+            val mentionedUser = event.message.mentionedMembers[if (isBotMention) 1 else 0]
             val mentionedRole = event.message.mentionedRoles[0]
 
             if (mentionedRole == null || mentionedUser == null) {
@@ -78,7 +78,6 @@ class RemoveRoleCommand(private val prefix: String) {
             event.channel.sendMessage(unknownMentionEmbed).queue { message ->
                 message.addReaction("🗑").queue()
             }
-
         }
     }
 }
