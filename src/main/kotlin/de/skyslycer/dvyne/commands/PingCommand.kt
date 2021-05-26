@@ -4,7 +4,6 @@ import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import java.awt.Color
 import java.time.Instant
-import java.time.OffsetDateTime
 import java.time.ZonedDateTime
 
 class PingCommand {
