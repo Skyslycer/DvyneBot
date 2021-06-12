@@ -1,59 +1,42 @@
-package de.skyslycer.dvyne.commands
+package de.skyslycer.dvyne.commands.slashcommands
 
 import net.dv8tion.jda.api.EmbedBuilder
+import net.dv8tion.jda.api.MessageBuilder
+import net.dv8tion.jda.api.entities.Emoji
 import net.dv8tion.jda.api.entities.MessageEmbed
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent
+import net.dv8tion.jda.api.interactions.button.Button
 import java.awt.Color
 import java.time.Instant
 import java.time.ZonedDateTime
 import java.util.*
+import java.util.concurrent.ThreadLocalRandom
 
-class RPSCommand(private val prefix: String) {
-    fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
-        val args = event.message.contentRaw.split(" ")
-
-        if (args.count() != 3) {
-            sendWrongUsage(event)
-            return
-        }
-
-        val playerInput = when (args[2]) {
+class RpsSlashCommand {
+    fun onSlashCommandEvent(event: SlashCommandEvent) {
+        val playerInput = when (event.getOption("rock-paper-scissors")!!.asString) {
             "rock", "r" -> 3
             "paper", "p" -> 1
             "scissors", "s" -> 2
             else -> {
-                sendWrongUsage(event); return
+                event.reply("You can only use one of the following arguments: **rock - paper - scissors**")
+                    .setEphemeral(true).queue()
+                return
             }
         }
 
-        val botInput = Random().nextInt(3) + 1
+        val botInput = ThreadLocalRandom.current().nextInt(1, 4);
 
-        var embedBuilder = EmbedBuilder()
+        val embedBuilder = EmbedBuilder()
             .setTitle("Rock, Paper, Scissors")
-            .addField(MessageEmbed.Field("Your input", args[2], false))
+            .addField(MessageEmbed.Field("Your input", event.getOption("rock-paper-scissors")!!.asString, false))
             .addField(MessageEmbed.Field("Bot input", getInputNameFromInt(botInput), false))
-            .setFooter(event.author.asTag)
+            .setFooter(event.user.asTag)
             .setTimestamp(Instant.from(ZonedDateTime.now()))
 
-        embedBuilder = setGameResult(playerInput, botInput, embedBuilder)
-
-        event.channel.sendMessage(embedBuilder.build()).queue { message ->
-            message.addReaction("🗑").queue()
-        }
-    }
-
-    private fun sendWrongUsage(event: GuildMessageReceivedEvent) {
-        val wrongUsageEmbed = EmbedBuilder()
-            .setTitle("Wrong usage!")
-            .setColor(Color.ORANGE)
-            .setDescription("Please use `$prefix rps (rock, paper, scissors)`")
-            .setFooter(event.author.asTag)
-            .setTimestamp(Instant.from(ZonedDateTime.now()))
-            .build()
-
-        event.channel.sendMessage(wrongUsageEmbed).queue { message ->
-            message.addReaction("🗑").queue()
-        }
+        event.reply(MessageBuilder(setGameResult(playerInput, botInput, embedBuilder)).build())
+            .addActionRow(Button.danger("${event.user.id}:delete", Emoji.ofUnicode("🗑")))
+            .queue()
     }
 
     private fun getInputNameFromInt(input: Int): String {

@@ -36,8 +36,6 @@ class AddReactionListener : ListenerAdapter() {
             }
         }
 
-        //                && event.reactionEmote == MessageReaction.ReactionEmote.fromUnicode("⏪", event.jda)
-
         if (message.author.asTag == "Dvyne#5076" && message.embeds.isNotEmpty()) {
             if (event.user.asTag == message.embeds[0].footer?.text ?: "null"
                 && event.member.user.asTag != "Dvyne#5076"
@@ -48,7 +46,7 @@ class AddReactionListener : ListenerAdapter() {
                 when(event.reactionEmote) {
                     MessageReaction.ReactionEmote.fromUnicode("⏪", event.jda) -> generateNewListEmbed((message.embeds[0].fields[4].value?.toInt() ?: 2) - 1, message, event)
                     MessageReaction.ReactionEmote.fromUnicode("⏩", event.jda) -> generateNewListEmbed((message.embeds[0].fields[4].value?.toInt() ?: 2) + 1, message, event)
-                    MessageReaction.ReactionEmote.fromUnicode("⏹", event.jda) -> {
+                        MessageReaction.ReactionEmote.fromUnicode("⏹", event.jda) -> {
                         message.removeReaction("⏪").queue()
                         message.removeReaction("⏹").queue()
                         message.removeReaction("⏩").queue()

@@ -93,18 +93,18 @@ class RemoveReactionRoleCommand(private val prefix: String) {
                 Tables.Reactions.deleteWhere {
                     Tables.Reactions.guild eq event.guild.idLong
                 }
+            }
 
-                val successEmbed = EmbedBuilder()
-                    .setTitle("Success!")
-                    .setColor(Color.GREEN)
-                    .setDescription("Successfully removed all the reaction roles from this server!")
-                    .setFooter(event.author.asTag)
-                    .setTimestamp(Instant.from(ZonedDateTime.now()))
-                    .build()
+            val successEmbed = EmbedBuilder()
+                .setTitle("Success!")
+                .setColor(Color.GREEN)
+                .setDescription("Successfully removed all the reaction roles from this server!")
+                .setFooter(event.author.asTag)
+                .setTimestamp(Instant.from(ZonedDateTime.now()))
+                .build()
 
-                event.channel.sendMessage(successEmbed).queue { embedMessage ->
-                    embedMessage.addReaction("🗑").queue()
-                }
+            event.channel.sendMessage(successEmbed).queue { embedMessage ->
+                embedMessage.addReaction("🗑").queue()
             }
         }  else if (args.count() == 3 && event.message.mentionedRoles.isNotEmpty()) {
             transaction {
@@ -151,19 +151,19 @@ class RemoveReactionRoleCommand(private val prefix: String) {
                 Tables.Reactions.deleteWhere {
                     (Tables.Reactions.guild eq event.guild.idLong) and (Tables.Reactions.message eq args[2].toLong())
                 }
+            }
 
-                val successEmbed = EmbedBuilder()
-                    .setTitle("Success!")
-                    .setColor(Color.GREEN)
-                    .setDescription("Successfully removed all the reaction roles with your arguments!")
-                    .addField("Message ID", args[2], false)
-                    .setFooter(event.author.asTag)
-                    .setTimestamp(Instant.from(ZonedDateTime.now()))
-                    .build()
+            val successEmbed = EmbedBuilder()
+                .setTitle("Success!")
+                .setColor(Color.GREEN)
+                .setDescription("Successfully removed all the reaction roles with your arguments!")
+                .addField("Message ID", args[2], false)
+                .setFooter(event.author.asTag)
+                .setTimestamp(Instant.from(ZonedDateTime.now()))
+                .build()
 
-                event.channel.sendMessage(successEmbed).queue { embedMessage ->
-                    embedMessage.addReaction("🗑").queue()
-                }
+            event.channel.sendMessage(successEmbed).queue { embedMessage ->
+                embedMessage.addReaction("🗑").queue()
             }
         } else {
             sendWrongUsage(event)

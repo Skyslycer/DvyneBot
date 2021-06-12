@@ -1,7 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val exposedVersion = "0.31.1"
-val log4jVersion = "2.14.0"
 
 plugins {
     kotlin("jvm") version "1.5.0"
@@ -14,14 +13,15 @@ version = "1.0-SNAPSHOT"
 repositories {
     mavenCentral()
     maven("https://m2.dv8tion.net/releases")
+    maven("https://jitpack.io")
 }
 
 dependencies {
-    implementation("net.dv8tion:JDA:4.2.1_253")
+//  implementation("net.dv8tion:JDA:4.2.1_253")
+    implementation("com.github.DV8FromTheWorld:JDA:5885efc")
 
     implementation("org.slf4j", "slf4j-api", "1.7.30")
-    implementation("org.apache.logging.log4j", "log4j-core", log4jVersion)
-    implementation("org.apache.logging.log4j", "log4j-slf4j-impl", log4jVersion)
+    implementation("ch.qos.logback", "logback-classic", "1.3.0-alpha5")
 
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
